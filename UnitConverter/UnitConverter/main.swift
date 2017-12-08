@@ -9,15 +9,19 @@
 import Foundation
 
 let unitArr = ["cm","m"]
-let value = 100
+
+
+func getBaseOfLength() -> Int {
+    return 100
+}
+
 
 func checkHasSuffix(_ arr: String, _ inputStr: String) -> Bool {
+
     if inputStr.hasSuffix(arr) {
-        if arr == "cm" {
-            sliceArr(input: inputStr, s: "c")
-        } else if arr == "m" {
-            sliceArr(input: inputStr, s: "m")
-        }
+        let strArr = arr
+        let i = strArr.index(strArr.startIndex, offsetBy: 0)
+            sliceArr(input: inputStr, s: strArr[i])  
         return true
     } else {
         return false
@@ -36,13 +40,15 @@ func sliceArr(input: String, s: Character) {
     }
 }
 
+
 func convertCmToM(int: Double, str: String) {
-    let meter = Double(int) / Double(value)
+    let meter = int / Double(getBaseOfLength())
     print("\(int)cm : \(meter)m")
 }
 
+
 func convertMToCm(int: Double, str: String) {
-    let centi = Double(int) * Double(value)
+    let centi = int * Double(getBaseOfLength())
     print("\(int)m : \(Int(centi))cm")
 }
 
@@ -52,16 +58,16 @@ while true {
     print("숫자단위로 입력해주세요 ex)180cm")
     
     let input = readLine()
-    if input == "q"{
+    if input == "q" {
         break
     }
-    if var inputValue = input {
+    guard let inputValue = input else { break }
         for idx in 0..<unitArr.count {
             if checkHasSuffix(unitArr[idx], inputValue) {
                 break
             }
         }
-    }
+    
     print("\n> 프로그램 종료: q \n")
 }
 
