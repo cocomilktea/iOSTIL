@@ -91,3 +91,83 @@ let theSortedNumbers = sortedEvenOddNumbers(aBunchOfNumbers)
 print("The even numbers are : \(theSortedNumbers.evens); the odd numbers are : \(theSortedNumbers.odds)")
  ```
 
+> Dictionary
+
+Dictionary는 데이터를 키(key)와 값(value)의 쌍으로 담아 두는 컬렉션 타입이다.
+
+키와 값은 서로 짝을 맞춰 딕셔너리에 저장된다.
+
+Dictionary 타입의 인스턴스에 키를 제공하면 이 키와 연결된 값을 리턴받는다.
+
+인스턴스의 키는 중복되지 않아야 한다. 
+
+변경할 수 없는 딕셔너리를 만들 때는 let키워드를 사용한다.
+
+```swift
+var movie = ["a": 1, "b": 2, "c": 3, "d": 4, "e": 5]
+print("I have rated \(movie.count) movies")
+let aa = movie["a"]
+movie["e"] = 6
+movie
+let old: Int? = movie.updateValue(10, forKey: "b")
+if let last = old, let current = movie["b"] {
+    print("old \(last); current \(current)")
+}
+movie["f"] = 7
+//movie.removeValue(forKey: "a") //제거된 키의 값을 리턴
+movie["a"] = nil //제거된 키의 값을 리턴하지 못한다
+
+//딕셔너리에 루프 적용하기
+for(key, value) in movie {
+    print("The movie \(key) was rated \(value)")
+}
+//키에만 엑세스하기
+for m in movie.keys {
+    print("User has rated \(m)")
+}
+//키를 배열로 보내기
+let arrMovie = Array(movie.keys)
+print(arrMovie)
+```
+
+> 구조체
+
+구조체(struct)는 서로 연관된 데이터들을 한데 묶은 타입이다. 
+
+구조체는 데이터를 어떤 하나의 타입에 두고 싶을 때 사용한다.
+
+구조체에 변수(프로퍼티)를 추가하면 도시의 특징을 구현하는 데 필요한 데이터 등을 
+
+담을 수 있다.
+
+구조체의 인스턴스 메서드가 구조체의 프로퍼티를 변경하려면 mutating라는 키워드가
+
+필요하다. 구조체와 열거형은 값 타입이라서 인스턴스의 프로퍼티 값을 변경할 메서드에는
+
+mutating 키워드가 붙어야 한다.
+
+```swift
+struct Town {
+    var population = 5_422
+    var numberOfstoplights = 4
+    
+    func printDescription() {
+        print("population: \(population), number of stoplights: \(numberOfstoplights)")
+    }
+    
+    mutating func changePopulation(by amount: Int) {
+        population += amount
+    }
+    
+}
+
+//인스턴스
+var myTown = Town()
+//print("population: \(myTown.population), number of stoplights: \(myTown.numberOfstoplights)")
+myTown.printDescription()
+myTown.changePopulation(by: 500)
+myTown.printDescription()
+```
+
+ 
+
