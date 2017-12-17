@@ -8,74 +8,131 @@
 
 import Foundation
 
-let unitArr = ["cm","m"]
 
+typealias UnitsDic = [String: Double]
 
-func getBaseOfLength() -> Int {
-    return 100
+struct Units {
+    static let lengthDic: UnitsDic = ["cm": 1, "m": 100, "inch": 2.54]
+    static let err: UnitsDic = ["err": 0]
 }
 
 
-func checkHasSuffix(_ arr: String, _ inputStr: String) -> Bool {
+func divideByBlank(_ inputStr: String) -> Array<String> {
+    let inputArr = inputStr.components(separatedBy: " ")
+        return inputArr
+}
 
-    if inputStr.hasSuffix(arr) {
-        let strArr = arr
-        let i = strArr.index(strArr.startIndex, offsetBy: 0)
-            sliceArr(input: inputStr, s: strArr[i])  
-        return true
-    } else {
+
+func checkUnit(_ inputStr: String) -> (unit: String?, category: UnitsDic) {
+    for key in Units.lengthDic.keys {
+        if inputStr.hasSuffix(key) { return (key, Units.lengthDic)}
+    }
+    return(nil, Units.err)
+}
+
+
+func divideOfDigit(_ inputStr: String, fromUnit: String) -> Double {
+    let digit = inputStr.components(separatedBy: "\(fromUnit)")
+    return Double(digit[0]) ?? 0
+}
+
+
+func confirmNameOfUnit(_ unit: String?) -> Bool {
+    if unit == nil {
+        print("지원하지 않는 단위입니다.")
         return false
     }
+    return true
 }
 
 
-func sliceArr(input: String, s: Character) {
-    let index = input.index(of: s) ?? input.endIndex
-    let begin = String(input[..<index])
-    let end = String(input[index...])
-    if end == "cm" {
-        convertCmToM(int: Double(begin) ?? 0, str: end)
-    } else if end == "m" {
-        convertMToCm(int: Double(begin) ?? 0, str: end)
-    }
-}
-
-
-func convertCmToM(int: Double, str: String) {
-    let meter = int / Double(getBaseOfLength())
-    print("\(int)cm : \(meter)m")
-}
-
-
-func convertMToCm(int: Double, str: String) {
-    let centi = int * Double(getBaseOfLength())
-    print("\(int)m : \(Int(centi))cm")
-}
-
-
-while true {
+func printMessage() {
     print("*** 단위변환기 ***")
-    print("숫자단위로 입력해주세요 ex)180cm")
+    print("길이단위와 변환할단위입력 ex)180cm inch")
+}
+
+
+func convertUnit(_ inputStr: String) {
+    let divideStr = divideByBlank(inputStr)
+    let fromUnitStr = checkUnit(divideStr[0])
     
-    let input = readLine()
-    if input == "q" {
-        break
+    if confirmNameOfUnit(fromUnitStr.unit) == false {
+        return
     }
-    guard let inputValue = input else { break }
-        for idx in 0..<unitArr.count {
-            if checkHasSuffix(unitArr[idx], inputValue) {
-                break
-            }
+    let inputDigit = divideOfDigit(divideStr[0], fromUnit: fromUnitStr.unit!)
+    if divideStr.count == 1 {
+        let unit = fromUnitStr.unit!
+        switch unit {
+        case "cm":
+            convertCmToM(int: Double(inputDigit))
+        case "m":
+            convertMToCm(int: Double(inputDigit))
+        default:
+            print("다시 입력해 주세요")
         }
+    }
+    if divideStr.count == 2 {
+        let toUnitStr = checkUnit(divideStr[1])
+        let compare = (fromUnitStr.unit!, toUnitStr.unit!)
+        switch compare {
+        case ("cm", "inch"):
+            convertCmToInch(int: Double(inputDigit))
+        case ("inch", "cm"):
+            convertInchToCm(int: Double(inputDigit))
+        case ("m", "inch"):
+            let mTocm = convertMToCm(int: Double(inputDigit))
+            convertCmToInch(int: mTocm)
+        case ("inch", "m"):
+            let inchToCm = convertInchToCm(int: Double(inputDigit))
+            convertCmToM(int: inchToCm)
+        default:
+            print("다시 입력해 주세요")
+        }
+    }
+}
+
+
+func convertCmToM(int: Double) -> Double {
+    let meter = int / Double(100)
+    print("\(int)cm : \(meter)m")
+    return meter
+}
+
+
+func convertMToCm(int: Double) -> Double {
+    let centi = int * Double(100)
+    print("\(int)m : \(Int(centi))cm")
+    return centi
+}
+
+
+func convertCmToInch(int: Double) -> Double {
+    let Inch: Double = 0.393701
+    let result = Inch * int
+    print("\(int)cm : \(result)inch")
+    return result
+}
+
+
+func convertInchToCm(int: Double) -> Double {
+    let cm: Double = 2.54
+    let result = cm * int
+    print("\(int)inch : \(result)cm")
+    return result
+}
+
+
+var run = true
+mainLoop: while run {
+    printMessage()
+    let input = readLine()
+    if input == "q" { break }
+    guard let inputValue = input else { break }
+    convertUnit(inputValue)
     
     print("\n> 프로그램 종료: q \n")
+    
 }
-
-
-
-
-
-
 
 
 
